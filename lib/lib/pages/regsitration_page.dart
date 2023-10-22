@@ -1,7 +1,7 @@
-// lib/pages/registration_page.dart
-
 import 'package:dhaba/lib/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegistrationPage extends StatelessWidget {
   @override
@@ -26,30 +26,88 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   String? _emailValidationMessage;
 
+  Future<void> _registerUser() async {
+    final String url = 'http://localhost:3000/api/register';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode({
+          'Username': _usernameController.text,
+          'Email': _emailController.text,
+          'Password': _passwordController.text,
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Registration successful, display the success message
+        final jsonData = json.decode(response.body);
+        final successMessage = jsonData['message'];
+
+        final snackBar = SnackBar(
+          content: Text(successMessage),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        // Registration failed, display the error message
+        final jsonData = json.decode(response.body);
+        final errorMessage = jsonData['error'];
+
+        final snackBar = SnackBar(
+          content: Text('Registration failed: $errorMessage'),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } catch (e) {
+      final snackBar = SnackBar(
+        content: Text(
+            'Registration failed: Network error. Please check your internet connection.'),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(
-              'assets/bg-1.jpg'), // Replace with your background image
+          image: AssetImage('assets/bg-1.jpg'),
           fit: BoxFit.cover,
         ),
       ),
       child: Center(
         child: Container(
           width: 300,
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.fromLTRB(20, 80, 20, 20),
           decoration: BoxDecoration(
-            color: Colors.transparent, // Set background color to transparent
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset(
-                'assets/FAST.png', // Replace with the path to your logo
-                width: 100, // Adjust the width as needed
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo
+                    Image.asset(
+                      'assets/FAST.png',
+                      width: 200,
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'DHAABA 2.0',
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 20),
               TextField(
@@ -97,14 +155,34 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Implement registration logic here
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => LoginPage(),
-                  ));
-                },
-                child: Text('Register'),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(
+                        Size(120, 40)), // Adjust button size
+                  ),
+                  onPressed: () {
+                    _registerUser();
+                  },
+                  child: Text('Register'),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(
+                        Size(120, 40)), // Adjust button size
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+                  },
+                  child: Text('Login'),
+                ),
               ),
             ],
           ),

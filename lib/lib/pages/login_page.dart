@@ -20,39 +20,28 @@ class LoginPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          child: BlocListener<LoginBloc, LoginState>(
+          child: BlocConsumer<LoginBloc, LoginState>(
             listener: (context, state) {
-              if (state is LoginFailureState) {
-                _showErrorSnackBar(context, state.error);
-              } else if (state is LoginSuccessState) {
+              if (state is LoginSuccessState) {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => VendorListPage(),
                 ));
               }
             },
-            child: BlocBuilder<LoginBloc, LoginState>(
-              builder: (context, state) {
-                if (state is LoginLoadingState) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  return LoginForm(
-                    usernameController: _usernameController,
-                    passwordController: _passwordController,
-                  );
-                }
-              },
-            ),
+            builder: (context, state) {
+              if (state is LoginLoadingState) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return LoginForm(
+                  usernameController: _usernameController,
+                  passwordController: _passwordController,
+                );
+              }
+            },
           ),
         ),
       ),
     );
-  }
-
-  void _showErrorSnackBar(BuildContext context, String error) {
-    final snackBar = SnackBar(
-      content: Text(error),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
@@ -72,17 +61,32 @@ class LoginForm extends StatelessWidget {
     return Center(
       child: Container(
         width: 300,
-        padding: EdgeInsets.all(20.0),
-        margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset('assets/FAST.png'),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo
+                  Image.asset(
+                    'assets/FAST.png',
+                    width: 200,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'DHAABA 2.0',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 20),
             TextField(
               controller: usernameController,
               decoration: InputDecoration(
-                labelText: 'Username',
+                labelText: 'Username or Email',
                 fillColor: Colors.white,
                 filled: true,
               ),
@@ -111,7 +115,7 @@ class LoginForm extends StatelessWidget {
               },
               child: Text('Login'),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 20),
             BlocBuilder<LoginBloc, LoginState>(
               builder: (context, state) {
                 if (state is LoginFailureState) {
