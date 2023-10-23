@@ -28,7 +28,7 @@
 
 1. Clone the repository:
    ```
-   git clone https://github.com/hasan-zahid-code/food-ordering-app.git
+   git clone https://github.com/hasan-zahid-code/food-ordering-for-fastians.git
    cd food-ordering-app
    flutter pub get
    flutter run
