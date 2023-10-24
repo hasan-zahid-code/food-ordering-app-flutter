@@ -25,6 +25,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
       TextEditingController();
 
   String? _emailValidationMessage;
+  String? _passwordValidationMessage;
+  String? _passwordMatchMessage;
 
   Future<void> _registerUser() async {
     final String url = 'http://localhost:3000/api/register';
@@ -40,8 +42,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 200) {
-        // Registration successful, display the success message
+      if (response.statusCode == 201) {
         final jsonData = json.decode(response.body);
         final successMessage = jsonData['message'];
 
@@ -51,7 +52,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } else {
-        // Registration failed, display the error message
         final jsonData = json.decode(response.body);
         final errorMessage = jsonData['error'];
 
@@ -138,20 +138,41 @@ class _RegistrationFormState extends State<RegistrationForm> {
               TextField(
                 controller: _passwordController,
                 obscureText: true,
+                onChanged: (password) {
+                  setState(() {
+                    _passwordValidationMessage = (password.length >= 8)
+                        ? null
+                        : 'Password Less Than 8 Characters';
+                  });
+                },
                 decoration: InputDecoration(
                   labelText: 'Password (8 characters)',
                   fillColor: Colors.white,
                   filled: true,
+                  errorText: _passwordValidationMessage,
                 ),
               ),
               SizedBox(height: 12),
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: true,
+                onChanged: (confirmPassword) {
+                  if (confirmPassword == _passwordController.text) {
+                    setState(() {
+                      _passwordMatchMessage =
+                          null; // Passwords match, clear the error message
+                    });
+                  } else {
+                    setState(() {
+                      _passwordMatchMessage = 'Passwords don\'t match';
+                    });
+                  }
+                },
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
                   fillColor: Colors.white,
                   filled: true,
+                  errorText: _passwordMatchMessage,
                 ),
               ),
               SizedBox(height: 20),
@@ -192,7 +213,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
   bool _validateEmail(String email) {
-    // Use a regular expression to validate the email format
     final RegExp emailRegExp =
         RegExp(r'^k\d{6}@nu.edu.pk$', caseSensitive: false);
     return emailRegExp.hasMatch(email);

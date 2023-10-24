@@ -86,7 +86,7 @@ class LoginForm extends StatelessWidget {
             TextField(
               controller: usernameController,
               decoration: InputDecoration(
-                labelText: 'Username or Email',
+                labelText: 'Student ID (Kxxxxxx)',
                 fillColor: Colors.white,
                 filled: true,
               ),
