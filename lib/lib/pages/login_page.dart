@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
       create: (context) => LoginBloc(),
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/bg-1.jpg'),
               fit: BoxFit.cover,
@@ -48,7 +48,6 @@ class LoginPage extends StatelessWidget {
 class LoginForm extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
-
   LoginForm({
     required this.usernameController,
     required this.passwordController,
@@ -57,7 +56,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginBloc = BlocProvider.of<LoginBloc>(context);
-
+    const SPACING20px = SizedBox(height: 20);
     return Center(
       child: Container(
         width: 300,
@@ -74,73 +73,94 @@ class LoginForm extends StatelessWidget {
                     'assets/FAST.png',
                     width: 200,
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  SPACING20px,
+                  const Text(
                     'DHAABA 2.0',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SPACING20px,
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Student ID (Kxxxxxx)',
                 fillColor: Colors.white,
                 filled: true,
+                prefixText: 'K-',
+                prefixStyle: TextStyle(
+                    color: Colors
+                        .black), // Optional: Customize the style of the prefix
               ),
             ),
-            SizedBox(height: 12),
+            SPACING20px,
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 fillColor: Colors.white,
                 filled: true,
               ),
             ),
-            SizedBox(height: 20),
+            SPACING20px,
             ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.blue), // Set button color to blue
-              ),
               onPressed: () {
                 loginBloc.add(LoginButtonPressed(
                   username: usernameController.text,
                   password: passwordController.text,
                 ));
               },
-              child: Text('Login'),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Login'),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Icon(
+                    Icons.login,
+                    size: 24.0,
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
+            SPACING20px,
             BlocBuilder<LoginBloc, LoginState>(
               builder: (context, state) {
                 if (state is LoginFailureState) {
-                  return Text(
-                    state.error,
-                    style: TextStyle(color: Colors.red),
-                  );
+                  Future.microtask(() {
+                    final snackBar = SnackBar(
+                      content: Text(state.error),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  });
                 }
                 return Container();
               },
             ),
-            SizedBox(height: 12),
+            SPACING20px,
             ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromARGB(
-                        255, 33, 75, 243)), // Set button color to blue
-              ),
               onPressed: () {
                 // Navigate to the registration page
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => RegistrationPage(),
                 ));
               },
-              child: Text('Register Instead'),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Register'),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Icon(
+                    Icons.app_registration,
+                    size: 24.0,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -179,10 +179,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(
-                        Size(120, 40)), // Adjust button size
-                  ),
                   onPressed: () {
                     _registerUser();
                   },
@@ -193,10 +189,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               Container(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(
-                        Size(120, 40)), // Adjust button size
-                  ),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => LoginPage(),

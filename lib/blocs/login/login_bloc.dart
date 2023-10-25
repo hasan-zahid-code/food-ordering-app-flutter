@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Events
 abstract class LoginEvent extends Equatable {
@@ -32,12 +31,12 @@ class LoginInitialState extends LoginState {}
 class LoginLoadingState extends LoginState {}
 
 class LoginSuccessState extends LoginState {
-  final String token;
+  final bool success;
 
-  const LoginSuccessState({required this.token});
+  const LoginSuccessState({required this.success});
 
   @override
-  List<Object> get props => [token];
+  List<Object> get props => [success];
 }
 
 class LoginFailureState extends LoginState {
@@ -69,25 +68,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
 
         if (response.statusCode == 200) {
-          final token = json.decode(response.body)['token'];
+          final success = json.decode(response.body)['success'];
 
-          // Store the token in SharedPreferences
-          await _storeToken(token);
-
-          yield LoginSuccessState(token: token);
+          yield LoginSuccessState(success: success);
         } else {
           final error = json.decode(response.body)['error'];
           yield LoginFailureState(error: error);
         }
       } catch (error) {
         print('Error: $error');
-        yield LoginFailureState(error: 'Server error. Please try again later.');
+        yield const LoginFailureState(
+            error: 'Server error. Please try again later.');
       }
     }
   }
-}
-
-Future<void> _storeToken(String token) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setString('authToken', token);
 }
