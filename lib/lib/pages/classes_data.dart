@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class User {
   List<MenuItem> favorites;
@@ -29,6 +31,29 @@ class FoodVendor {
     this.categories,
     this.menuItems,
   });
+
+  static Future<List<FoodVendor>> fetchVendors() async {
+    final response =
+        await http.get(Uri.parse('http://localhost:3000/api/vendors'));
+
+    if (response.statusCode == 200) {
+      final List<FoodVendor> vendors =
+          List<FoodVendor>.from(json.decode(response.body).map((data) {
+        print(response.body);
+        return FoodVendor(
+          title: data['vendorName'] ?? 'Default Title',
+          location: data['vendorLocation'] ?? 'Default Location',
+          description: data['vendorDescription'] ?? 'Default Description',
+          icon: Icons.fastfood,
+          cardColor: Colors.blue,
+          menuItems: _shawarmaMenu,
+        );
+      }));
+      return vendors;
+    } else {
+      throw Exception('Failed to load vendors');
+    }
+  }
 }
 
 class MenuItem {
@@ -59,50 +84,6 @@ class CartItem {
   });
 }
 
-// Define your list of categories here
-final List<FoodVendor> vendors = [
-  FoodVendor(
-    title: 'Shawarma Corner',
-    location: 'Location 1',
-    description: 'Best Item in fast',
-    icon: Icons.fastfood,
-    cardColor: Colors.blue,
-    menuItems: _shawarmaMenu,
-  ),
-  FoodVendor(
-    title: 'Pizza Fast',
-    location: 'Location 2',
-    description: 'Pizza and fun',
-    icon: Icons.local_pizza,
-    cardColor: Colors.green,
-    menuItems: _shawarmaMenu,
-  ),
-  FoodVendor(
-    title: 'Dhaba',
-    location: 'Location 3',
-    description: 'Roll corner',
-    icon: Icons.restaurant,
-    cardColor: Colors.orange,
-    menuItems: _shawarmaMenu,
-  ),
-  FoodVendor(
-    title: 'Cafe',
-    location: 'Location 4',
-    description: 'Chai Baithak A/C Mahol',
-    icon: Icons.local_dining,
-    cardColor: Colors.purple,
-    menuItems: _shawarmaMenu,
-  ),
-  FoodVendor(
-    title: 'Chai Wala',
-    location: 'Location 5',
-    description: 'Khassi chai',
-    icon: Icons.local_cafe,
-    cardColor: Colors.red,
-    menuItems: _shawarmaMenu,
-  ),
-];
-
 final List<MenuItem> _shawarmaMenu = [
   MenuItem(
     name: 'Chicken Shawarma',
@@ -132,15 +113,7 @@ final List<MenuItem> _shawarmaMenu = [
 ];
 
 final List<String> categories = [
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
-  'Category 1',
+  'Shawarma',
 ];
 
 // Define cart items globally

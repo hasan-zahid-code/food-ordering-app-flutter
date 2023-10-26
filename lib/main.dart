@@ -4,9 +4,9 @@ import 'package:dhaba/lib/pages/vendor_list_page.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: HeroPage(),
+    //home: HeroPage(),
 
-    // home: VendorListPage(),
+    home: VendorListPage(),
   ));
 }
 

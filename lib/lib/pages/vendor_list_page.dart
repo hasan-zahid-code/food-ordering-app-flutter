@@ -5,13 +5,17 @@ import 'package:dhaba/lib/pages/cart_page.dart'; // Import the CartPage
 import 'package:dhaba/lib/pages/drawer.dart';
 import 'package:dhaba/lib/pages/classes_data.dart';
 
+Future<List<FoodVendor>> populateVendors() async {
+  return await FoodVendor.fetchVendors();
+}
+
 class VendorListPage extends StatefulWidget {
   @override
   _VendorListPageState createState() => _VendorListPageState();
 }
 
 class _VendorListPageState extends State<VendorListPage> {
-  int _selectedIndex = 0; // Index of the selected tab
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +63,6 @@ class _VendorListPageState extends State<VendorListPage> {
   // Helper method to build the body content
   Widget _buildBody() {
     if (_selectedIndex == 0) {
-      // Display the VendorList page
       return VendorList();
     } else if (_selectedIndex == 1) {
       // Display the CartPage when Cart tab is selected
@@ -83,66 +86,77 @@ class _VendorListPageState extends State<VendorListPage> {
 }
 
 class VendorList extends StatelessWidget {
-  // Define your list of food vendors here
-
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.0,
-        ),
-        itemCount: vendors.length,
-        itemBuilder: (context, index) {
-          final vendor = vendors[index];
-
-          return Card(
-            margin: EdgeInsets.all(12.0),
-            color: vendor.cardColor,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MenuPage(vendor: vendor),
-                ));
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    vendor.icon,
-                    size: 80.0,
-                    color: Colors.white,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    vendor.title,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Location: ${vendor.location}',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Description: ${vendor.description}',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+      child: FutureBuilder<List<FoodVendor>>(
+        future: populateVendors(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            final vendors = snapshot.data!;
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.0,
               ),
-            ),
-          );
+              itemCount: vendors.length,
+              itemBuilder: (context, index) {
+                final vendor = vendors[index];
+
+                return Card(
+                  margin: EdgeInsets.all(12.0),
+                  color: vendor.cardColor,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MenuPage(vendor: vendor),
+                      ));
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          vendor.icon,
+                          size: 80.0,
+                          color: Colors.white,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          vendor.title,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Location: ${vendor.location}',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Description: ${vendor.description}',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+          return Text('No data to display.');
         },
       ),
     );
