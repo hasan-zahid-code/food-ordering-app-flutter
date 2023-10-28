@@ -23,7 +23,7 @@ Drawer globalDrawer(BuildContext context) {
           ),
         ),
         ListTile(
-          title: Text('👤   Profile Settings'),
+          title: Text('Profile Settings'),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProfileSettingsPage(),

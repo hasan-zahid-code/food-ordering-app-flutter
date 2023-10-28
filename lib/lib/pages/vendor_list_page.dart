@@ -99,16 +99,16 @@ class VendorList extends StatelessWidget {
           } else if (snapshot.hasData) {
             final vendors = snapshot.data!;
             return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.0,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 2,
               ),
               itemCount: vendors.length,
               itemBuilder: (context, index) {
                 final vendor = vendors[index];
 
                 return Card(
-                  margin: EdgeInsets.all(12.0),
+                  margin: EdgeInsets.all(10),
                   color: vendor.cardColor,
                   child: InkWell(
                     onTap: () {
@@ -130,14 +130,6 @@ class VendorList extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Location: ${vendor.location}',
-                          style: TextStyle(
-                            fontSize: 12.0,
                             color: Colors.white,
                           ),
                         ),

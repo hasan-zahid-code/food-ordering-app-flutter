@@ -1,3 +1,4 @@
+//import 'package:dhaba/lib/pages/vendor_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaba/lib/pages/cart_page.dart';
 import 'package:dhaba/lib/pages/classes_data.dart';
@@ -22,16 +23,20 @@ class _MenuPageState extends State<MenuPage>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300), // You can adjust the duration
+      duration: Duration(milliseconds: 300),
     );
 
-    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller)
+    _animation = Tween<double>(begin: 1.0, end: 1.3).animate(_controller)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _controller.reverse();
         }
       });
+    // Call the function to fetch menu items when the page loads
+    fetchMenuItems(widget.vendor.vendorid);
   }
+
+  // Function to fetch menu items
 
   @override
   Widget build(BuildContext context) {

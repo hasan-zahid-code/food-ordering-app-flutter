@@ -29,7 +29,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? _passwordMatchMessage;
 
   Future<void> _registerUser() async {
-    final String url = 'http://localhost:3000/api/register';
+    const String url = 'http://localhost:3000/api/register';
 
     try {
       final response = await http.post(
