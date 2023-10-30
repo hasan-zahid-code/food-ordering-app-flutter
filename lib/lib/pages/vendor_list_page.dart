@@ -6,7 +6,7 @@ import 'package:dhaba/lib/pages/drawer.dart';
 import 'package:dhaba/lib/pages/classes_data.dart';
 
 Future<List<FoodVendor>> populateVendors() async {
-  return await FoodVendor.fetchVendors();
+  return await fetchVendors();
 }
 
 class VendorListPage extends StatefulWidget {
@@ -72,7 +72,8 @@ class _VendorListPageState extends State<VendorListPage> {
       );
     } else if (_selectedIndex == 2) {
       // Display the FavoritesPage when Favorites tab is selected
-      return FavoritesPage(favoriteItems: User(favorites: favoriteItems));
+      return FavoritesPage(
+          favoriteItems: User(favorites: currentUser.favorites));
     }
 
     return Container(); // Return an empty container if index is out of range

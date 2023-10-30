@@ -32,11 +32,7 @@ class _MenuPageState extends State<MenuPage>
           _controller.reverse();
         }
       });
-    // Call the function to fetch menu items when the page loads
-    fetchMenuItems(widget.vendor.vendorid);
   }
-
-  // Function to fetch menu items
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +44,7 @@ class _MenuPageState extends State<MenuPage>
         children: [
           // Horizontal Category Menu
           Container(
-            height: 60, // Adjust the height as needed
+            height: 60,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
@@ -74,121 +70,135 @@ class _MenuPageState extends State<MenuPage>
               },
             ),
           ),
+
           // Vertical Slider with Menu Items
           Expanded(
-            child: ListView.builder(
-              itemCount: widget.vendor.menuItems?.length ?? 0, // Check for null
-              itemBuilder: (context, index) {
-                final menuItem = widget.vendor.menuItems?[index];
-
-                if (menuItem != null) {
-                  return Card(
-                    margin: EdgeInsets.all(12.0),
-                    child: InkWell(
-                      onTap: () {},
-                      child: Row(
-                        children: [
-                          // Left side (heart icon)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              icon: Icon(
-                                menuItem.isFavorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: menuItem.isFavorite
-                                    ? Colors.red
-                                    : Colors.grey,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  menuItem.isFavorite = !menuItem.isFavorite;
-                                  if (menuItem.isFavorite) {
-                                    User(favorites: favoriteItems)
-                                        .favorites
-                                        .add(menuItem);
-                                  } else {
-                                    User(favorites: favoriteItems)
-                                        .favorites
-                                        .remove(menuItem);
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          // Right side (image and details)
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    menuItem.name,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    'Price: ₨${menuItem.price.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.035,
-                                    ),
-                                  ),
-                                  // Add more details about the menu item here
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Image
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            child: Image.asset(
-                              menuItem.image,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          // Add to Cart button
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Add the menu item to the cart
-                                setState(() {
-                                  if (cartItemsMap.containsKey(menuItem.name)) {
-                                    // If the same item is added, increment quantity
-                                    cartItemsMap[menuItem.name]!.quantity++;
-                                  } else {
-                                    // If a different item is added, append to the list
-                                    final CartItem cartItem = CartItem(
-                                      name: menuItem.name,
-                                      price: menuItem.price,
-                                      image: menuItem.image,
-                                      quantity: 1,
-                                    );
-                                    cartItemsMap[menuItem.name] = cartItem;
-                                  }
-
-                                  // Trigger the bounce animation
-                                  _controller.forward();
-                                });
-                              },
-                              child: Text('Add to Cart'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+            child: FutureBuilder<List<MenuItem>?>(
+              future: fetchMenuItems(widget.vendor.vendorid),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Display a loading indicator while waiting for data
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // Display an error message if an error occurred
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.data!.isEmpty) {
+                  // Display a message if no menu items are available
+                  return Center(child: Text('No menu items available.'));
                 } else {
-                  // Handle the case where menuItem is null
-                  return Container();
+                  // Display the menu items when data is available
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final menuItem = snapshot.data![index];
+                      return Card(
+                        margin: EdgeInsets.all(10.0),
+                        child: InkWell(
+                          onTap: () {
+                            // Handle item tap
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      menuItem.isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: menuItem.isFavorite
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        menuItem.isFavorite =
+                                            !menuItem.isFavorite;
+                                        if (menuItem.isFavorite) {
+                                          currentUser.favorites.add(menuItem);
+                                        } else {
+                                          currentUser.favorites
+                                              .remove(menuItem);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                                // Right side (image and details)
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          menuItem.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Price: ₨${menuItem.price.toStringAsFixed(2)}',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        // Add more details about the menu item here
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                // Image
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width: 80,
+                                    child: Image.asset(
+                                      menuItem.image,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                // Add to Cart button
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Add the menu item to the cart
+                                      setState(() {
+                                        if (cartItemsMap
+                                            .containsKey(menuItem.name)) {
+                                          // If the same item is added, increment quantity
+                                          cartItemsMap[menuItem.name]!
+                                              .quantity++;
+                                        } else {
+                                          // If a different item is added, append to the list
+                                          final CartItem cartItem = CartItem(
+                                            name: menuItem.name,
+                                            price: menuItem.price,
+                                            image: menuItem.image,
+                                            quantity: 1,
+                                          );
+                                          cartItemsMap[menuItem.name] =
+                                              cartItem;
+                                        }
+
+                                        // Trigger the bounce animation
+                                        _controller.forward();
+                                      });
+                                    },
+                                    child: Text('Add to Cart'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 }
               },
             ),

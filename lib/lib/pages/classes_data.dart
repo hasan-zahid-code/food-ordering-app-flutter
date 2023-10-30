@@ -2,16 +2,75 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+//DATA FETCHING FUNCTIONS
+Future<List<MenuItem>?> fetchMenuItems(String vendorid) async {
+  try {
+    final response = await http
+        .get(Uri.parse('http://localhost:3000/api/menu?vendorId=$vendorid'));
+
+    if (response.statusCode == 200) {
+      _listOfMenuItems =
+          List<MenuItem>.from(json.decode(response.body).map((item) {
+        return MenuItem(
+          itemId: item['ITEMID'],
+          name: item["ITEMNAME"],
+          price: item["PRICE"].toDouble(),
+          image: item["IMAGE"],
+        );
+      })).toList();
+      return _listOfMenuItems;
+    } else {
+      // Handle the case where data couldn't be fetched
+      print('Failed to fetch menu items for vendor $vendorid');
+      return null; // Return null to indicate failure
+    }
+  } catch (error) {
+    // Handle any errors that occur during the fetch
+    print('Error menu items: $error');
+    return null; // Return null to indicate failure
+  }
+}
+
+Future<List<FoodVendor>> fetchVendors() async {
+  final response =
+      await http.get(Uri.parse('http://localhost:3000/api/vendors'));
+  if (response.statusCode == 200) {
+    final List<FoodVendor> vendors =
+        List<FoodVendor>.from(json.decode(response.body).map((data) {
+      return FoodVendor(
+          vendorid: data['vendorId'],
+          title: data['vendorName'],
+          description: data['vendorDescription'],
+          icon: Icons.fastfood,
+          cardColor: Colors.blue,
+          menuItems: _listOfMenuItems);
+    }));
+
+    return vendors;
+  } else {
+    throw Exception('Failed to load vendors');
+  }
+}
+
 class User {
+  String? studentId;
+  String? userName;
   List<MenuItem> favorites;
 
   User({
+    this.studentId,
+    this.userName,
     required this.favorites,
   });
+
+  void printFavorites() {
+    for (MenuItem item in favorites) {
+      print('Favorite Item: ${item.name}');
+    }
+  }
 }
 
-// Sample data for a user's favorite items
-final List<MenuItem> favoriteItems = [];
+User currentUser = User(favorites: []);
 
 class FoodVendor {
   final String vendorid;
@@ -29,28 +88,8 @@ class FoodVendor {
     required this.icon,
     required this.cardColor,
     this.categories,
-    this.menuItems = const [], // Initialize menuItems with an empty list
+    this.menuItems = const [],
   });
-
-  static Future<List<FoodVendor>> fetchVendors() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/api/vendors'));
-    if (response.statusCode == 200) {
-      final List<FoodVendor> vendors =
-          List<FoodVendor>.from(json.decode(response.body).map((data) {
-        return FoodVendor(
-            vendorid: data['vendorId'],
-            title: data['vendorName'],
-            description: data['vendorDescription'],
-            icon: Icons.fastfood,
-            cardColor: Colors.blue,
-            menuItems: data['menuItem'] ?? []);
-      }));
-      return vendors;
-    } else {
-      throw Exception('Failed to load vendors');
-    }
-  }
 }
 
 class MenuItem {
@@ -69,34 +108,6 @@ class MenuItem {
   });
 }
 
-List<MenuItem> menuItems = [];
-
-Future<void> fetchMenuItems(String vendorid) async {
-  try {
-    final response = await http
-        .get(Uri.parse('http://localhost:3000/api/menu?vendorId=$vendorid'));
-
-    if (response.statusCode == 200) {
-      final List<MenuItem> menuItems =
-          List<MenuItem>.from(json.decode(response.body).map((item) {
-        return MenuItem(
-          itemId: item['ITEMID'],
-          name: item["ITEMNAME"],
-          price: item["PRICE"].toDouble(),
-          image: item["IMAGE"],
-        );
-      })).toList();
-      print(menuItems);
-    } else {
-      // Handle the case where data couldn't be fetched
-      print('Failed to fetch menu items');
-    }
-  } catch (error) {
-    // Handle any errors that occur during the fetch
-    print('Error menu items: $error');
-  }
-}
-
 class CartItem {
   final String name;
   int quantity;
@@ -111,33 +122,38 @@ class CartItem {
   });
 }
 
-// final List<MenuItem> _shawarmaMenu = [
-//   MenuItem(
-//     name: 'Chicken Shawarma',
-//     price: 150,
-//     image: 'assets/shawarma.png',
-//   ),
-//   MenuItem(
-//     name: 'Zinger Shawarma',
-//     price: 190,
-//     image: 'assets/zinger-shawarma.png',
-//   ),
-//   MenuItem(
-//     name: 'Macroni Shawarma',
-//     price: 150,
-//     image: 'assets/shawarma.png',
-//   ),
-//   MenuItem(
-//     name: 'Chicken Mayo Shawarma',
-//     price: 160,
-//     image: 'assets/shawarma.png',
-//   ),
-//   MenuItem(
-//     name: 'Chicken Cheese Shawarma',
-//     price: 180,
-//     image: 'assets/shawarma.png',
-//   ),
-// ];
+List<MenuItem> _listOfMenuItems = [
+  // MenuItem(
+  //   itemId: "1001",
+  //   name: 'Chicken Shawarma',
+  //   price: 150,
+  //   image: 'assets/shawarma.png',
+  // ),
+  // MenuItem(
+  //   itemId: "1002",
+  //   name: 'Zinger Shawarma',
+  //   price: 190,
+  //   image: 'assets/zinger-shawarma.png',
+  // ),
+  // MenuItem(
+  //   itemId: "1003",
+  //   name: 'Macroni Shawarma',
+  //   price: 150,
+  //   image: 'assets/shawarma.png',
+  // ),
+  // MenuItem(
+  //   itemId: "1004",
+  //   name: 'Chicken Mayo Shawarma',
+  //   price: 160,
+  //   image: 'assets/shawarma.png',
+  // ),
+  // MenuItem(
+  //   itemId: "1005",
+  //   name: 'Chicken Cheese Shawarma',
+  //   price: 180,
+  //   image: 'assets/shawarma.png',
+  // ),
+];
 
 final List<String> categories = ['Shawarma', 'Shawarma'];
 
