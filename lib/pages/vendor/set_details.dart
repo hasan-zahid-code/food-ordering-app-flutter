@@ -21,10 +21,10 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
   void initState() {
     super.initState();
 
-    _nameController.text = currentVendor.name ?? "";
-    _descriptionController.text = currentVendor.description ?? "";
-    _contactNumberController.text = currentVendor.contactNo ?? "";
-    _emailController.text = currentVendor.email ?? "";
+    _nameController.text = currentVendor.name;
+    _descriptionController.text = currentVendor.description;
+    _contactNumberController.text = currentVendor.contactNo;
+    _emailController.text = currentVendor.email;
   }
 
   @override
@@ -38,6 +38,11 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            TextFormField(
+              initialValue: currentVendor.vendorid,
+              enabled: false,
+              decoration: InputDecoration(labelText: "Vendor ID"),
+            ),
             _buildTextField("Vendor Name", _nameController),
             _buildTextField("Description", _descriptionController),
             _buildTextField("Contact Number", _contactNumberController),
@@ -98,9 +103,10 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
         final response = await http.post(
           Uri.parse(url),
           body: jsonEncode({
-            'name': currentVendor.name,
+            'VendorId': currentVendor.vendorid,
+            'Name': currentVendor.name,
             'Description': currentVendor.description,
-            'ContactNo': currentVendor.contactNo,
+            'Phone': currentVendor.contactNo,
             'Email': currentVendor.email,
           }),
           headers: {'Content-Type': 'application/json'},
@@ -120,25 +126,19 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
           final errorMessage = jsonData['error'];
 
           final snackBar = SnackBar(
-            content: Text('Registration failed: $errorMessage'),
+            content: Text('Vendor Data Update failed: $errorMessage'),
           );
 
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       } catch (e) {
         final snackBar = SnackBar(
-          content: Text(
-              'Registration failed: Network error. Please check your internet connection.'),
+          content: Text('Updation failed: Network error.'),
         );
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
-
-    print("Details saved permanently");
-
-    // Simulating an asynchronous operation
-    await Future.delayed(Duration(seconds: 2));
 
     // After saving permanently, disable editing mode
     setState(() {
@@ -147,13 +147,13 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
   }
 
   bool _validateInputs() {
-    if (currentVendor.email!.isEmpty) {
+    if (currentVendor.email.isEmpty || !_validateEmail(currentVendor.email)) {
       _showErrorDialog('Invalid Email');
       return false;
-    } else if (currentVendor.contactNo!.isEmpty) {
+    } else if (currentVendor.contactNo.isEmpty) {
       _showErrorDialog('Contact number cannot be empty');
       return false;
-    } else if (currentVendor.name!.isEmpty) {
+    } else if (currentVendor.name.isEmpty) {
       _showErrorDialog('Name cannot be empty');
       return false;
     }
@@ -178,5 +178,10 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
         );
       },
     );
+  }
+
+  bool _validateEmail(String email) {
+    final RegExp emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegExp.hasMatch(email);
   }
 }

@@ -1,12 +1,16 @@
 class Vendor {
-  String? vendorid;
-  String? name;
-  String? description;
-  String? contactNo;
-  String? email;
+  String vendorid;
+  String name;
+  String description;
+  String contactNo;
+  String email;
 
   Vendor(
-      {this.vendorid, this.name, this.description, this.contactNo, this.email});
+      {required this.vendorid,
+      required this.name,
+      required this.description,
+      required this.contactNo,
+      required this.email});
 
   factory Vendor.fromJson(Map<String, dynamic> json) {
     return Vendor(
@@ -19,4 +23,9 @@ class Vendor {
   }
 }
 
-Vendor currentVendor = Vendor();
+Vendor currentVendor = Vendor(
+    vendorid: '100001',
+    name: 'hasan',
+    description: 'this is my store',
+    contactNo: '03212471039',
+    email: 'exampple@gmail.com');

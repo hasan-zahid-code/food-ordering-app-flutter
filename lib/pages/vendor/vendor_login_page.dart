@@ -92,9 +92,6 @@ class VendorLoginForm extends StatelessWidget {
                 labelText: 'Contact No',
                 fillColor: Colors.white,
                 filled: true,
-                prefixStyle: TextStyle(
-                    color: Colors
-                        .black), // Optional: Customize the style of the prefix
               ),
             ),
             SPACING20px,

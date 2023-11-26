@@ -237,7 +237,7 @@ class _VendorRegistrationPageState extends State<VendorRegistrationPage> {
   }
 
   bool _validateEmail(String email) {
-    final RegExp emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    final RegExp emailRegExp = RegExp(r'^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$');
     return emailRegExp.hasMatch(email);
   }
 }

@@ -59,8 +59,7 @@ class VendorLoginBloc extends Bloc<VendorLoginEvent, VendorLoginState> {
 
       try {
         final response = await http.post(
-          Uri.parse(
-              'http://localhost:3000/api/vendorLogin'), // Replace with your vendor login API endpoint
+          Uri.parse('http://localhost:3000/api/vendorLogin'),
           body: jsonEncode({
             'contactNo': event.phone,
             'Password': event.password,
@@ -78,7 +77,7 @@ class VendorLoginBloc extends Bloc<VendorLoginEvent, VendorLoginState> {
           yield VendorLoginFailureState(error: error);
         }
       } catch (error) {
-        print('Error 1: $error');
+        print('Error: $error');
         yield const VendorLoginFailureState(
             error: 'Server error. Please try again later.');
       }
