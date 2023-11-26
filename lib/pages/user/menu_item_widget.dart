@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/classes_data.dart';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 class MenuItemWidget extends StatelessWidget {
   final MenuItem menuItem;

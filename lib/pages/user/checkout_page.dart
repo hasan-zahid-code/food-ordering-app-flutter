@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/classes_data.dart';
-import 'package:dhaba/lib/pages/payment_service.dart'; // Import the payment service
+import 'package:dhaba/pages/user/classes_data.dart';
+import 'package:dhaba/pages/user/payment_service.dart'; // Import the payment service
 
 class CheckoutPage extends StatefulWidget {
   final List<CartItem> cartItems;
-  final String customerName;
 
-  CheckoutPage({required this.cartItems, required this.customerName});
+  CheckoutPage({required this.cartItems});
 
   @override
   _CheckoutPageState createState() => _CheckoutPageState();
@@ -63,7 +62,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Customer Name: ${widget.customerName}'),
+              Text('Customer: ${currentUser.userName}'),
               SizedBox(height: 16),
               Text('Order Details:'),
               // Display order details here using widget.cartItems

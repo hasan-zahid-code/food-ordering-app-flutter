@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/favorites_page.dart'; // Import the FavoritesPage
-import 'package:dhaba/lib/pages/menu_page.dart';
-import 'package:dhaba/lib/pages/cart_page.dart'; // Import the CartPage
-import 'package:dhaba/lib/pages/drawer.dart';
-import 'package:dhaba/lib/pages/classes_data.dart';
+import 'package:dhaba/pages/user/favorites_page.dart'; // Import the FavoritesPage
+import 'package:dhaba/pages/user/menu_page.dart';
+import 'package:dhaba/pages/user/cart_page.dart'; // Import the CartPage
+import 'package:dhaba/pages/user/drawer.dart';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 Future<List<FoodVendor>> populateVendors() async {
   return await fetchVendors();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/classes_data.dart'; // Import the User class and its data
+import 'package:dhaba/pages/user/classes_data.dart'; // Import the User class and its data
 
 class FavoritesPage extends StatefulWidget {
   final User favoriteItems; // Pass UserFavoriteItems
@@ -19,7 +19,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
       ),
       body: Center(
         child: widget.favoriteItems.favorites.isEmpty
-            ? Text('No favorite items, add items from the menu')
+            ? Text('No favorite items, add items from the menu',
+                style: TextStyle(fontSize: 18))
             : ListView.builder(
                 itemCount: widget.favoriteItems.favorites.length,
                 itemBuilder: (context, index) {

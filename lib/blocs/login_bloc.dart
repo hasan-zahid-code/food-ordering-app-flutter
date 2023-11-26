@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 // Events
 abstract class LoginEvent extends Equatable {
@@ -61,15 +62,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           Uri.parse(
               'http://localhost:3000/api/login'), // Replace with your API endpoint
           body: jsonEncode({
-            'Username': event.username,
+            'ID': event.username,
             'Password': event.password,
           }),
           headers: {'Content-Type': 'application/json'},
         );
 
         if (response.statusCode == 200) {
-          final success = json.decode(response.body)['success'];
-
+          final success = json.decode(response.body)['Success'];
+          currentUser = User.fromJson(json.decode(response.body)['User']);
+          print(currentUser.userName);
           yield LoginSuccessState(success: success);
         } else {
           final error = json.decode(response.body)['error'];

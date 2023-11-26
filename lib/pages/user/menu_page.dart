@@ -1,7 +1,7 @@
 //import 'package:dhaba/lib/pages/vendor_list_page.dart';
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/cart_page.dart';
-import 'package:dhaba/lib/pages/classes_data.dart';
+import 'package:dhaba/pages/user/cart_page.dart';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 class MenuPage extends StatefulWidget {
   final FoodVendor vendor;

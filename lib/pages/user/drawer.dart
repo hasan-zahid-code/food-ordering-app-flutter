@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/login_page.dart';
-import 'package:dhaba/lib/pages/profile_settings_page.dart';
-import 'package:dhaba/lib/pages/wallet_page.dart';
-import 'package:dhaba/lib/pages/about_developers_page.dart';
+import 'package:dhaba/pages/user/login_page.dart';
+import 'package:dhaba/pages/user/profile_settings_page.dart';
+import 'package:dhaba/pages/user/wallet_page.dart';
+import 'package:dhaba/pages/user/about_developers_page.dart';
 
 // Define the Drawer globally
 Drawer globalDrawer(BuildContext context) {

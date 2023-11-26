@@ -1,12 +1,15 @@
+import 'package:dhaba/pages/vendor/vendorDashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/login_page.dart';
-import 'package:dhaba/lib/pages/vendor_list_page.dart';
+import 'package:dhaba/pages/user/login_page.dart';
+// import 'package:dhaba/pages/user/vendor_list_page.dart';
+// import 'package:dhaba/pages/vendor/vendor_registration.dart';
+import 'package:dhaba/pages/vendor/vendor_login_page.dart';
 
 void main() {
   runApp(MaterialApp(
-    //home: HeroPage(),
+    home: VendorLoginPage(),
 
-    home: VendorListPage(),
+    //VendorListPage(),
   ));
 }
 
@@ -41,7 +44,7 @@ class HeroPage extends StatelessWidget {
                   onPressed: () {
                     // Navigate to the vendor login page
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => LoginPage(),
+                      builder: (context) => VendorLoginPage(),
                     ));
                   },
                   child: Text('Login as Vendor'),

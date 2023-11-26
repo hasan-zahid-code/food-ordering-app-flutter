@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:dhaba/blocs/vendor_login_bloc.dart'; // Make sure to import the correct file
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dhaba/blocs/login/login_bloc.dart';
-import 'package:dhaba/lib/pages/vendor_list_page.dart';
-import 'package:dhaba/lib/pages/regsitration_page.dart';
+import 'package:dhaba/pages/vendor/vendor_Registration.dart';
+import 'package:dhaba/pages/vendor/vendorDashboard.dart';
 
-class LoginPage extends StatelessWidget {
+class VendorLoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginBloc(),
+      create: (context) => VendorLoginBloc(),
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Vendor Login'),
+        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -20,19 +24,19 @@ class LoginPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          child: BlocConsumer<LoginBloc, LoginState>(
+          child: BlocConsumer<VendorLoginBloc, VendorLoginState>(
             listener: (context, state) {
-              if (state is LoginSuccessState) {
+              if (state is VendorLoginSuccessState) {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => VendorListPage(),
+                  builder: (context) => VendorDashboardPage(),
                 ));
               }
             },
             builder: (context, state) {
-              if (state is LoginLoadingState) {
+              if (state is VendorLoginLoadingState) {
                 return Center(child: CircularProgressIndicator());
               } else {
-                return LoginForm(
+                return VendorLoginForm(
                   usernameController: _usernameController,
                   passwordController: _passwordController,
                 );
@@ -45,17 +49,17 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class LoginForm extends StatelessWidget {
+class VendorLoginForm extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
-  LoginForm({
+  VendorLoginForm({
     required this.usernameController,
     required this.passwordController,
   });
 
   @override
   Widget build(BuildContext context) {
-    final loginBloc = BlocProvider.of<LoginBloc>(context);
+    final loginBloc = BlocProvider.of<VendorLoginBloc>(context);
     const SPACING20px = SizedBox(height: 20);
     return Center(
       child: Container(
@@ -85,10 +89,9 @@ class LoginForm extends StatelessWidget {
             TextField(
               controller: usernameController,
               decoration: const InputDecoration(
-                labelText: 'Student ID (Kxxxxxx)',
+                labelText: 'Contact No',
                 fillColor: Colors.white,
                 filled: true,
-                prefixText: 'K-',
                 prefixStyle: TextStyle(
                     color: Colors
                         .black), // Optional: Customize the style of the prefix
@@ -107,8 +110,8 @@ class LoginForm extends StatelessWidget {
             SPACING20px,
             ElevatedButton(
               onPressed: () {
-                loginBloc.add(LoginButtonPressed(
-                  username: usernameController.text,
+                loginBloc.add(VendorLoginButtonPressed(
+                  phone: usernameController.text,
                   password: passwordController.text,
                 ));
               },
@@ -127,9 +130,9 @@ class LoginForm extends StatelessWidget {
               ),
             ),
             SPACING20px,
-            BlocBuilder<LoginBloc, LoginState>(
+            BlocBuilder<VendorLoginBloc, VendorLoginState>(
               builder: (context, state) {
-                if (state is LoginFailureState) {
+                if (state is VendorLoginFailureState) {
                   Future.microtask(() {
                     final snackBar = SnackBar(
                       content: Text(state.error),
@@ -140,12 +143,11 @@ class LoginForm extends StatelessWidget {
                 return Container();
               },
             ),
-            SPACING20px,
             ElevatedButton(
               onPressed: () {
                 // Navigate to the registration page
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => RegistrationPage(),
+                  builder: (context) => VendorRegistrationPage(),
                 ));
               },
               child: const Row(

@@ -62,7 +62,13 @@ class User {
     this.userName,
     required this.favorites,
   });
-
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      studentId: json['studentId'],
+      userName: json['userName'],
+      favorites: [], // Initialize favorites as an empty list
+    );
+  }
   void printFavorites() {
     for (MenuItem item in favorites) {
       print('Favorite Item: ${item.name}');

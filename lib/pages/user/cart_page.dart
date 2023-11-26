@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/lib/pages/checkout_page.dart';
-import 'package:dhaba/lib/pages/drawer.dart';
-import 'package:dhaba/lib/pages/classes_data.dart';
+import 'package:dhaba/pages/user/checkout_page.dart';
+import 'package:dhaba/pages/user/drawer.dart';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 class CartPage extends StatefulWidget {
   final List<CartItem> cartItems;
@@ -54,52 +54,59 @@ class _CartPageState extends State<CartPage> {
               ),
       ),
       drawer: globalDrawer(context),
-      body: ListView.builder(
-        itemCount: widget.cartItems.length,
-        itemBuilder: (context, index) {
-          final item = widget.cartItems[index];
-          return CartItemRow(
-            item: item,
-            onQuantityChanged: (newQuantity) {
-              setState(() {
-                item.quantity = newQuantity;
-                calculateTotalPrice();
-              });
-            },
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16),
-        color: Color.fromARGB(255, 74, 161, 223),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Total: ₨${totalPrice.toStringAsFixed(2)}',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CheckoutPage(
-                      cartItems: widget.cartItems,
-                      customerName: 'Abdullah',
-                    ),
-                  ),
+      body: widget.cartItems.isNotEmpty
+          ? ListView.builder(
+              itemCount: widget.cartItems.length,
+              itemBuilder: (context, index) {
+                final item = widget.cartItems[index];
+                return CartItemRow(
+                  item: item,
+                  onQuantityChanged: (newQuantity) {
+                    setState(() {
+                      item.quantity = newQuantity;
+                      calculateTotalPrice();
+                    });
+                  },
                 );
               },
-              child: Text('Checkout'),
+            )
+          : null,
+      bottomNavigationBar: widget.cartItems.isEmpty
+          ? const Center(
+              child: Text(
+                'Cart is empty. Add items to the cart.',
+                style: TextStyle(fontSize: 18),
+              ),
+            )
+          : Container(
+              padding: EdgeInsets.all(16),
+              color: Colors.blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total: ₨${totalPrice.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CheckoutPage(cartItems: widget.cartItems),
+                        ),
+                      );
+                    },
+                    child: Text('Checkout'),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
