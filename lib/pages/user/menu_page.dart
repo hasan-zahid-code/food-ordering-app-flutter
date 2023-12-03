@@ -16,6 +16,8 @@ class _MenuPageState extends State<MenuPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  bool _menuFetched = false;
+  List<MenuItem>? _menuItems; // Store fetched menu items
 
   @override
   void initState() {
@@ -32,6 +34,23 @@ class _MenuPageState extends State<MenuPage>
           _controller.reverse();
         }
       });
+
+    // Fetch menu items when the widget is initialized
+    _fetchMenuItems();
+  }
+
+  // Function to fetch menu items
+  Future<void> _fetchMenuItems() async {
+    try {
+      List<MenuItem> menuItems = await fetchMenuItems(widget.vendor.vendorid);
+      setState(() {
+        _menuItems = menuItems;
+        _menuFetched = true;
+      });
+    } catch (error) {
+      // Handle error
+      print('Error fetching menu items: $error');
+    }
   }
 
   @override
@@ -71,26 +90,12 @@ class _MenuPageState extends State<MenuPage>
             ),
           ),
 
-          // Vertical Slider with Menu Items
           Expanded(
-            child: FutureBuilder<List<MenuItem>?>(
-              future: fetchMenuItems(widget.vendor.vendorid),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Display a loading indicator while waiting for data
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  // Display an error message if an error occurred
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.data!.isEmpty) {
-                  // Display a message if no menu items are available
-                  return Center(child: Text('No menu items available.'));
-                } else {
-                  // Display the menu items when data is available
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
+            child: _menuFetched
+                ? ListView.builder(
+                    itemCount: _menuItems!.length,
                     itemBuilder: (context, index) {
-                      final menuItem = snapshot.data![index];
+                      final menuItem = _menuItems![index];
                       return Card(
                         margin: EdgeInsets.all(10.0),
                         child: InkWell(
@@ -137,8 +142,9 @@ class _MenuPageState extends State<MenuPage>
                                         Text(
                                           menuItem.name,
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
                                         ),
                                         SizedBox(height: 8),
                                         Text(
@@ -198,10 +204,8 @@ class _MenuPageState extends State<MenuPage>
                         ),
                       );
                     },
-                  );
-                }
-              },
-            ),
+                  )
+                : Center(child: CircularProgressIndicator()),
           ),
         ],
       ),

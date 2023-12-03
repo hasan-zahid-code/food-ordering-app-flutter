@@ -1,5 +1,5 @@
+import 'package:dhaba/main.dart';
 import 'package:flutter/material.dart';
-import 'package:dhaba/pages/user/login_page.dart';
 import 'package:dhaba/pages/user/profile_settings_page.dart';
 import 'package:dhaba/pages/user/wallet_page.dart';
 import 'package:dhaba/pages/user/about_developers_page.dart';
@@ -60,7 +60,7 @@ Drawer globalDrawer(BuildContext context) {
           onTap: () {
             // Navigate to the vendor login page
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) => HeroPage(),
             ));
           },
         ),

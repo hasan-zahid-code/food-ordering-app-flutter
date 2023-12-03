@@ -2,38 +2,51 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-//DATA FETCHING FUNCTIONS
-Future<List<MenuItem>?> fetchMenuItems(String vendorid) async {
-  try {
-    final response = await http
-        .get(Uri.parse('http://localhost:3000/api/menu?vendorId=$vendorid'));
+IconData getFoodIcon(String vendorName) {
+  // Icons.fastfood,
+  // Icons.restaurant,
+  // Icons.local_pizza,
+  // Icons.local_cafe,
+  // Icons.local_dining,
+  // Icons.local_bar
 
-    if (response.statusCode == 200) {
-      _listOfMenuItems =
-          List<MenuItem>.from(json.decode(response.body).map((item) {
-        return MenuItem(
-          itemId: item['ITEMID'],
-          name: item["ITEMNAME"],
-          price: item["PRICE"].toDouble(),
-          image: item["IMAGE"],
-        );
-      })).toList();
-      return _listOfMenuItems;
-    } else {
-      // Handle the case where data couldn't be fetched
-      print('Failed to fetch menu items for vendor $vendorid');
-      return null; // Return null to indicate failure
-    }
-  } catch (error) {
-    // Handle any errors that occur during the fetch
-    print('Error menu items: $error');
-    return null; // Return null to indicate failure
+  if (vendorName.contains('Pizza'))
+    return Icons.local_pizza_outlined;
+  else if (vendorName.contains('Shawarma'))
+    return Icons.fastfood;
+  else if (vendorName.contains('Cafe'))
+    return Icons.local_dining;
+  else if (vendorName.contains('Juice'))
+    return Icons.local_bar;
+  else
+    return Icons.restaurant_menu;
+}
+
+Future<List<MenuItem>> fetchMenuItems(String vendorid) async {
+  final response = await http
+      .get(Uri.parse('http://localhost:3000/api/menu?vendorId=$vendorid'));
+
+  if (response.statusCode == 200) {
+    _listOfMenuItems =
+        List<MenuItem>.from(json.decode(response.body).map((item) {
+      return MenuItem(
+        itemId: item['ITEMID'],
+        name: item["ITEMNAME"],
+        price: item["PRICE"].toDouble(),
+        image: item["IMAGE"],
+        isFavorite: currentUser.favorites
+            .any((favItem) => favItem.itemId == item['ITEMID']),
+      );
+    })).toList();
+    return _listOfMenuItems;
   }
+  throw Exception();
 }
 
 Future<List<FoodVendor>> fetchVendors() async {
   final response =
       await http.get(Uri.parse('http://localhost:3000/api/vendors'));
+
   if (response.statusCode == 200) {
     final List<FoodVendor> vendors =
         List<FoodVendor>.from(json.decode(response.body).map((data) {
@@ -41,15 +54,14 @@ Future<List<FoodVendor>> fetchVendors() async {
           vendorid: data['vendorId'],
           title: data['vendorName'],
           description: data['vendorDescription'],
-          icon: Icons.fastfood,
+          icon: getFoodIcon(data['vendorName']),
           cardColor: Colors.blue,
           menuItems: _listOfMenuItems);
     }));
 
     return vendors;
-  } else {
-    throw Exception('Failed to load vendors');
   }
+  throw Exception();
 }
 
 class User {
@@ -128,6 +140,10 @@ class CartItem {
   });
 }
 
+Map<String, List<MenuItem>> vendorMenuMap = {
+  // 'vendor1': _listOfMenuItems,
+  // 'vendor2': [],
+};
 List<MenuItem> _listOfMenuItems = [
   // MenuItem(
   //   itemId: "1001",

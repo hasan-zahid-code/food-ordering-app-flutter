@@ -71,7 +71,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (response.statusCode == 200) {
           final success = json.decode(response.body)['Success'];
           currentUser = User.fromJson(json.decode(response.body)['User']);
-          print(currentUser.userName);
+          // print(currentUser.userName);
+          // print(currentUser.studentId);
+          // print(currentUser.favorites);
           yield LoginSuccessState(success: success);
         } else {
           final error = json.decode(response.body)['error'];
