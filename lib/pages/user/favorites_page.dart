@@ -100,6 +100,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   } else {
                                     // If a different item is added, append to the list
                                     final CartItem cartItem = CartItem(
+                                      vendorId: favoriteItem.vendorId,
+                                      itemId: favoriteItem.itemId,
                                       name: favoriteItem.name,
                                       price: favoriteItem.price,
                                       image: favoriteItem.image,

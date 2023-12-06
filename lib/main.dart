@@ -2,13 +2,27 @@ import 'package:dhaba/pages/vendor/vendorDashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaba/pages/user/login_page.dart';
 import 'package:dhaba/pages/user/vendor_list_page.dart';
-// import 'package:dhaba/pages/vendor/vendor_registration.dart';
 import 'package:dhaba/pages/vendor/vendor_login_page.dart';
+import 'package:dhaba/pages/vendor/classes_data.dart'; // Import your classes_data.dart file
+import 'package:dhaba/pages/vendor/view_orders.dart';
+import 'package:provider/provider.dart'; // Import the provider package
 
 void main() {
-  runApp(MaterialApp(
-    home: VendorDashboardPage(),
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => OrderNotifier(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: VendorListPage(),
+    );
+  }
 }
 
 class HeroPage extends StatelessWidget {

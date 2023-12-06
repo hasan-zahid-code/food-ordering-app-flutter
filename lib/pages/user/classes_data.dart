@@ -30,6 +30,7 @@ Future<List<MenuItem>> fetchMenuItems(String vendorid) async {
     _listOfMenuItems =
         List<MenuItem>.from(json.decode(response.body).map((item) {
       return MenuItem(
+        vendorId: item['VENDORID'],
         itemId: item['ITEMID'],
         name: item["ITEMNAME"],
         price: item["PRICE"].toDouble(),
@@ -81,22 +82,22 @@ class User {
       favorites: [], // Initialize favorites as an empty list
     );
   }
-  void printFavorites() {
-    for (MenuItem item in favorites) {
-      print('Favorite Item: ${item.name}');
-    }
+  void clear() {
+    studentId = null;
+    userName = null;
+    favorites.clear(); // Clear the favorites list
   }
 }
 
 User currentUser = User(favorites: []);
 
 class FoodVendor {
-  final String vendorid;
-  final String title;
-  final String description;
-  final IconData icon;
-  final Color cardColor;
-  final List<String>? categories;
+  String vendorid;
+  String title;
+  String description;
+  IconData icon;
+  Color cardColor;
+  List<String>? categories;
   List<MenuItem> menuItems;
 
   FoodVendor({
@@ -108,42 +109,67 @@ class FoodVendor {
     this.categories,
     this.menuItems = const [],
   });
+  void clear() {
+    vendorid = '';
+    title = '';
+    description = '';
+    categories = null;
+    menuItems = [];
+  }
 }
 
 class MenuItem {
-  final String itemId;
-  final String name;
-  final double price;
-  final String image;
+  String vendorId;
+  String itemId;
+  String name;
+  double price;
+  String image;
   bool isFavorite;
 
   MenuItem({
+    required this.vendorId,
     required this.itemId,
     required this.name,
     required this.price,
     required this.image,
     this.isFavorite = false,
   });
+  void clear() {
+    vendorId = '';
+    name = '';
+    itemId = '';
+    image = '';
+    price = 0;
+    isFavorite = false;
+  }
 }
 
 class CartItem {
-  final String name;
+  String vendorId;
+  String itemId;
+  String name;
   int quantity;
-  final String image;
-  final double price;
+  String image;
+  double price;
 
   CartItem({
+    required this.vendorId,
+    required this.itemId,
     required this.name,
     this.quantity = 1,
     required this.image,
     required this.price,
   });
+  void clear() {
+    vendorId = '';
+    name = '';
+    itemId = '';
+    image = '';
+    price = 0;
+    quantity = 0;
+  }
 }
 
-Map<String, List<MenuItem>> vendorMenuMap = {
-  // 'vendor1': _listOfMenuItems,
-  // 'vendor2': [],
-};
 List<MenuItem> _listOfMenuItems = [
   // MenuItem(
   //   itemId: "1001",
@@ -177,10 +203,10 @@ List<MenuItem> _listOfMenuItems = [
   // ),
 ];
 
-final List<String> categories = ['Shawarma', 'Shawarma'];
+final List<String> categories = [];
 
 // Define cart items globally
-List<CartItem> cartItems = [];
+//List<CartItem> cartItems = [];
 
 // Create a map to track the cart items with unique keys
 final Map<String, CartItem> cartItemsMap = {};

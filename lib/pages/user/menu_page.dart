@@ -182,6 +182,8 @@ class _MenuPageState extends State<MenuPage>
                                         } else {
                                           // If a different item is added, append to the list
                                           final CartItem cartItem = CartItem(
+                                            vendorId: widget.vendor.vendorid,
+                                            itemId: menuItem.itemId,
                                             name: menuItem.name,
                                             price: menuItem.price,
                                             image: menuItem.image,

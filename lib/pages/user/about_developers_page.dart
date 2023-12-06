@@ -8,11 +8,14 @@ class AboutDevelopersPage extends StatelessWidget {
         image: 'assets/abdullah.jpg',
         cardColor: Colors.red),
     Developer(
-        name: 'Hasan Zahid', id: '21K-4872', image: '', cardColor: Colors.blue),
+        name: 'Hasan Zahid',
+        id: '21K-4872',
+        image: 'assets/suited.jpg',
+        cardColor: Colors.blue),
     Developer(
         name: 'Huzaifa Siddiqui',
         id: '21K-3376',
-        image: '',
+        image: 'food.png',
         cardColor: Colors.green)
   ];
 

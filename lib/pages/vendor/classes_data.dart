@@ -53,63 +53,65 @@ class MenuItem {
     required this.price,
     required this.image,
   });
-}
 
-// Dummy data for testing, replace this with your actual order data
-final List<Order> Orders = [
-  Order(
-      orderId: '1',
-      customerName: 'John Doe',
-      item: 'Burger',
-      total: 10.0,
-      quantity: 2,
-      orderStatus: OrderStatus.pending),
-  Order(
-      orderId: '2',
-      customerName: 'Jane Doe',
-      item: 'Pizza',
-      total: 15.0,
-      quantity: 1,
-      orderStatus: OrderStatus.delivered),
-  Order(
-      orderId: '3',
-      customerName: 'Bob Smith',
-      item: 'Salad',
-      total: 8.0,
-      quantity: 3,
-      orderStatus: OrderStatus.pending),
-  // Add more orders as needed
-];
-
-class Order {
-  final String orderId;
-  final String customerName;
-  final String item;
-  final double total;
-  final int quantity;
-  OrderStatus orderStatus;
-
-  Order({
-    required this.orderId,
-    required this.customerName,
-    required this.item,
-    required this.total,
-    required this.quantity,
-    required this.orderStatus,
-  });
-
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      orderId: json['orderId'],
-      customerName: json['customerName'],
-      item: json['item'],
-      total: json['total'].toDouble(),
-      quantity: json['quantity'],
-      orderStatus: json['orderStatus'] == 'pending'
-          ? OrderStatus.pending
-          : OrderStatus.delivered,
+  factory MenuItem.fromJson(Map<String, dynamic> json) {
+    return MenuItem(
+      itemId: json['itemId'],
+      name: json['name'],
+      price: json['price'].toDouble(),
+      image: json['image'],
     );
   }
 }
 
-enum OrderStatus { pending, delivered }
+enum OrderStatus { pending, delivered, cancelled }
+
+class Order {
+  String orderId;
+  String studentId;
+  List<OrderItem> items;
+  int totalAmount;
+  String status;
+
+  Order({
+    required this.orderId,
+    required this.studentId,
+    required this.items,
+    required this.totalAmount,
+    required this.status,
+  });
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    List<dynamic> itemsJson = json['items'];
+    List<OrderItem> orderItems =
+        itemsJson.map((item) => OrderItem.fromJson(item)).toList();
+
+    return Order(
+      orderId: json['orderid'],
+      studentId: json['studentid'],
+      items: orderItems,
+      totalAmount: json['totalamount'],
+      status: json['status'],
+    );
+  }
+}
+
+class OrderItem {
+  String name;
+  int quantity;
+  int price;
+
+  OrderItem({
+    required this.name,
+    required this.quantity,
+    required this.price,
+  });
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+      name: json['name'],
+      quantity: json['quantity'],
+      price: json['price'],
+    );
+  }
+}

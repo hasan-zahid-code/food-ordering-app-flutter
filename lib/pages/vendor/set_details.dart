@@ -13,7 +13,9 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _contactNumberController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _currentPasswordController = TextEditingController();
+  TextEditingController _newPasswordController = TextEditingController();
+  TextEditingController _reenterPasswordController = TextEditingController();
 
   bool _isEditing = false;
 
@@ -33,37 +35,55 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
       appBar: AppBar(
         title: Text('Set Details'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              initialValue: currentVendor.vendorid,
-              enabled: false,
-              decoration: InputDecoration(labelText: "Vendor ID"),
-            ),
-            _buildTextField("Vendor Name", _nameController),
-            _buildTextField("Description", _descriptionController),
-            _buildTextField("Contact Number", _contactNumberController),
-            _buildTextField("Email", _emailController),
-            //  Spacer(), // Spacer to push the buttons to the bottom
-            _isEditing
-                ? Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          await _savePermanently();
-                        },
-                        child: Text('Save Permanently'),
-                      ),
-                    ],
-                  )
-                : IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: _startEditing,
-                  ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Existing details form
+              TextFormField(
+                initialValue: currentVendor.vendorid,
+                enabled: false,
+                decoration: InputDecoration(labelText: "Vendor ID"),
+              ),
+              _buildTextField("Vendor Name", _nameController),
+              _buildTextField("Description", _descriptionController),
+              _buildTextField("Contact Number", _contactNumberController),
+              _buildTextField("Email", _emailController),
+              _isEditing
+                  ? Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await _savePermanently();
+                          },
+                          child: Text('Save Permanently'),
+                        ),
+                      ],
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: _startEditing,
+                    ),
+              // Change Password form
+              SizedBox(height: 20),
+              Text(
+                'Change Password',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              _buildPasswordField(
+                  "Current Password", _currentPasswordController),
+              _buildPasswordField("New Password", _newPasswordController),
+              _buildPasswordField(
+                  "Re-enter New Password", _reenterPasswordController),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _isEditing ? _savePassword : null,
+                child: Text('Change Password'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -76,6 +96,21 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
       child: TextFormField(
         controller: controller,
         obscureText: obscureText,
+        enabled: _isEditing,
+        decoration: InputDecoration(
+          labelText: labelText,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(
+      String labelText, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        obscureText: true,
         enabled: _isEditing,
         decoration: InputDecoration(
           labelText: labelText,
@@ -158,6 +193,55 @@ class _SetDetailsPageState extends State<SetDetailsPage> {
       return false;
     }
     return true;
+  }
+
+  Future<void> _savePassword() async {
+    String currentPassword = _currentPasswordController.text;
+    String newPassword = _newPasswordController.text;
+    String reenteredPassword = _reenterPasswordController.text;
+
+    if (newPassword != reenteredPassword) {
+      _showErrorDialog('New passwords do not match');
+      return;
+    }
+
+    // Make a network request to change the password
+    const String changePasswordUrl =
+        'http://localhost:3000/api/changePassword/vendor';
+
+    try {
+      final response = await http.post(
+        Uri.parse(changePasswordUrl),
+        body: jsonEncode({
+          'ID': currentVendor.vendorid,
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        _clearPasswordFields();
+        final snackBar = SnackBar(
+          content: Text('Password changed successfully!'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else {
+        final jsonData = json.decode(response.body);
+        final errorMessage = jsonData['error'];
+
+        _showErrorDialog('Password change failed: $errorMessage');
+      }
+    } catch (e) {
+      // Handle network errors
+      _showErrorDialog('Password change failed: Network error.');
+    }
+  }
+
+  void _clearPasswordFields() {
+    _currentPasswordController.clear();
+    _newPasswordController.clear();
+    _reenterPasswordController.clear();
   }
 
   void _showErrorDialog(String message) {

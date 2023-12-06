@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/pages/user/favorites_page.dart'; // Import the FavoritesPage
+import 'package:dhaba/pages/user/favorites_page.dart';
 import 'package:dhaba/pages/user/menu_page.dart';
-import 'package:dhaba/pages/user/cart_page.dart'; // Import the CartPage
+import 'package:dhaba/pages/user/cart_page.dart';
 import 'package:dhaba/pages/user/drawer.dart';
 import 'package:dhaba/pages/user/classes_data.dart';
 

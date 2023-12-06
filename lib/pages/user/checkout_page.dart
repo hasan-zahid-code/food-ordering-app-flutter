@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:dhaba/pages/user/classes_data.dart';
-import 'package:dhaba/pages/user/payment_service.dart'; // Import the payment service
+import 'dart:convert';
 
 class CheckoutPage extends StatefulWidget {
   final List<CartItem> cartItems;
@@ -12,11 +13,6 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  String paymentOption = 'Cash'; // Default payment option
-
-  // Create an instance of the PaymentService
-  final PaymentService _paymentService = PaymentService();
-
   // Calculate the total price of items in the cart
   double calculateTotalPrice() {
     double totalPrice = 0;
@@ -26,20 +22,59 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return totalPrice;
   }
 
-  // Handle the "Proceed to Pay" button tap
-  void handlePayment() async {
-    // Call the payment service to process the payment
-    final success = await _paymentService.makePayment(
-      calculateTotalPrice(),
-      paymentOption,
-    );
+  void placeOrder(BuildContext context) async {
+    final String apiUrl = 'http://localhost:3000/api/placeOrder';
 
-    if (success) {
-      // Payment successful
-      // You can navigate to a success page or perform other actions here
-    } else {
-      // Payment failed
-      // You can show an error message to the user or handle it accordingly
+    List<Map<String, dynamic>> itemsList = [];
+    cartItemsMap.forEach((key, value) {
+      itemsList.add({
+        'itemId': value.itemId,
+        'vendorId': value.vendorId,
+        'quantity': value.quantity,
+      });
+    });
+
+    Map<String, dynamic> payload = {
+      'userId': currentUser.studentId,
+      'items': itemsList,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200) {
+        // Order placed successfully
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Order placed successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        print('Order placed successfully');
+      } else {
+        // Handle errors here
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Failed to place order. Status code: ${response.statusCode}'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        print('Failed to place order. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network errors here
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error placing order: $error'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      print('Error placing order: $error');
     }
   }
 
@@ -82,43 +117,43 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               SizedBox(height: 16),
               Text('Total Price: ₨${calculateTotalPrice().toStringAsFixed(2)}'),
-              SizedBox(height: 16),
-              Text('Payment Method:'),
+              // SizedBox(height: 16),
+              // Text('Payment Method:'),
               // Display payment options (Cash, Easypaisa, Jazzcash)
-              RadioListTile(
-                title: Text('Cash'),
-                value: 'Cash',
-                groupValue: paymentOption,
-                onChanged: (value) {
-                  setState(() {
-                    paymentOption = value.toString();
-                  });
-                },
-              ),
-              RadioListTile(
-                title: Text('Easypaisa'),
-                value: 'Easypaisa',
-                groupValue: paymentOption,
-                onChanged: (value) {
-                  setState(() {
-                    paymentOption = value.toString();
-                  });
-                },
-              ),
-              RadioListTile(
-                title: Text('Jazzcash'),
-                value: 'Jazzcash',
-                groupValue: paymentOption,
-                onChanged: (value) {
-                  setState(() {
-                    paymentOption = value.toString();
-                  });
-                },
-              ),
+              // RadioListTile(
+              //   title: Text('Cash'),
+              //   value: 'Cash',
+              //   groupValue: paymentOption,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       paymentOption = value.toString();
+              //     });
+              //   },
+              // ),
+              // RadioListTile(
+              //   title: Text('Easypaisa'),
+              //   value: 'Easypaisa',
+              //   groupValue: paymentOption,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       paymentOption = value.toString();
+              //     });
+              //   },
+              // ),
+              // RadioListTile(
+              //   title: Text('Jazzcash'),
+              //   value: 'Jazzcash',
+              //   groupValue: paymentOption,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       paymentOption = value.toString();
+              //     });
+              //   },
+              // ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: handlePayment, // Call the payment function
-                child: Text('Proceed to Pay'),
+                onPressed: () => placeOrder(context),
+                child: Text('Place Order'),
               ),
             ],
           ),

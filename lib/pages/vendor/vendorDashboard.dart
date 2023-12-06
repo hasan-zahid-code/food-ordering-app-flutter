@@ -26,6 +26,7 @@ class VendorDashboardPage extends StatelessWidget {
               },
               title: 'Set Details',
               color: Colors.blue,
+              icon: Icons.settings,
             ),
             SizedBox(height: 20),
             CardButton(
@@ -37,6 +38,7 @@ class VendorDashboardPage extends StatelessWidget {
               },
               title: 'Vendor Menu',
               color: Colors.green,
+              icon: Icons.restaurant_menu,
             ),
             SizedBox(height: 20),
             CardButton(
@@ -48,9 +50,10 @@ class VendorDashboardPage extends StatelessWidget {
               },
               title: 'View Orders',
               color: Colors.orange,
+              icon: Icons.list,
             ),
-            Spacer(),
-            ElevatedButton(
+            SizedBox(height: 20),
+            CardButton(
               onPressed: () {
                 // Navigate to HeroPage on logout
                 Navigator.of(context).pushAndRemoveUntil(
@@ -60,7 +63,9 @@ class VendorDashboardPage extends StatelessWidget {
                   (route) => false,
                 );
               },
-              child: Text('Logout'),
+              title: 'Logout',
+              color: Colors.redAccent,
+              icon: Icons.power_settings_new,
             ),
           ],
         ),
@@ -73,9 +78,11 @@ class CardButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String title;
   final Color color;
+  final IconData icon;
 
   const CardButton({
     Key? key,
+    required this.icon,
     required this.onPressed,
     required this.title,
     required this.color,
@@ -88,14 +95,33 @@ class CardButton extends StatelessWidget {
       color: color,
       child: InkWell(
         onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 40.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

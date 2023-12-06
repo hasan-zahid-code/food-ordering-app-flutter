@@ -1,8 +1,8 @@
 import 'package:dhaba/main.dart';
 import 'package:flutter/material.dart';
 import 'package:dhaba/pages/user/profile_settings_page.dart';
-import 'package:dhaba/pages/user/wallet_page.dart';
 import 'package:dhaba/pages/user/about_developers_page.dart';
+import 'package:dhaba/pages/user/classes_data.dart';
 
 // Define the Drawer globally
 Drawer globalDrawer(BuildContext context) {
@@ -12,38 +12,44 @@ Drawer globalDrawer(BuildContext context) {
       children: [
         DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
-          ),
-          child: Text(
-            'DHAABA 2.0',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 36,
+            color: Colors.black,
+            image: DecorationImage(
+              image: AssetImage('Fast.jpg'), // Replace with your image path
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5), // Adjust the opacity as needed
+                BlendMode.dstATop,
+              ),
             ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'DHAABA 2.0',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 36,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                'Hello, ${currentUser.userName}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+            ],
           ),
         ),
         ListTile(
-          title: Text('Profile Settings'),
+          title: Text('Change Password'),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProfileSettingsPage(),
             ));
-            // Handle menu item 1 tap here
-          },
-        ),
-        ListTile(
-          title: Text('Wallet'),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => WalletPage(
-                userName:
-                    'Abdullah Siddiqui', // Pass the user's name dynamically
-                userEmail:
-                    'k213447@nu.edu.pk', // Pass the user's email dynamically
-                walletAmount: 1000.0, // Pass the wallet amount dynamically
-              ),
-            ));
-            // Handle menu item 2 tap here
           },
         ),
         ListTile(
@@ -51,17 +57,19 @@ Drawer globalDrawer(BuildContext context) {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AboutDevelopersPage(),
-              // Handle menu item 2 tap here
             ));
           },
         ),
         ListTile(
           title: Text('Logout'),
           onTap: () {
-            // Navigate to the vendor login page
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HeroPage(),
-            ));
+            currentUser.clear();
+            cartItemsMap.clear();
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => HeroPage(),
+                ),
+                (route) => false);
           },
         ),
       ],
