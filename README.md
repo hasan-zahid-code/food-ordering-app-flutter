@@ -1,5 +1,5 @@
 # DHABA 2.0
-## Food Ordering For Fastians
+## A Food Ordering App on Flutter
 
 **This is a simple Flutter app for food ordering. Users can register, login, and order food from various vendors. The app allows students and vendors to interact and place orders.**
 
