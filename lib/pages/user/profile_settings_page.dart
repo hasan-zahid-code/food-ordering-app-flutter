@@ -50,7 +50,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                // Implement logic to change password
                 await _savePassword();
               },
               child: Text('Save Changes'),
@@ -71,15 +70,14 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
       return;
     }
 
-    // Make a network request to change the password
     const String changePasswordUrl =
-        'http://localhost:3000/api/changePassword/student'; // Update the URL
+        'http://localhost:3000/api/changePassword/student';
 
     try {
       final response = await http.post(
         Uri.parse(changePasswordUrl),
         body: jsonEncode({
-          'ID': currentUser.studentId, // Assuming currentVendor is accessible
+          'ID': currentUser.studentId,
           'currentPassword': currentPassword,
           'newPassword': newPassword,
         }),
@@ -99,7 +97,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
         _showErrorDialog('Password change failed: $errorMessage');
       }
     } catch (e) {
-      // Handle network errors
       _showErrorDialog('Password change failed: Network error.');
     }
   }

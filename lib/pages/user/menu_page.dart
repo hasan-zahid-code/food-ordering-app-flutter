@@ -61,35 +61,6 @@ class _MenuPageState extends State<MenuPage>
       ),
       body: Column(
         children: [
-          // Horizontal Category Menu
-          Container(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InkWell(
-                    onTap: () {
-                      // Handle category selection here
-                    },
-                    hoverColor: Colors.blue.withOpacity(0.2),
-                    child: Center(
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
           Expanded(
             child: _menuFetched
                 ? ListView.builder(

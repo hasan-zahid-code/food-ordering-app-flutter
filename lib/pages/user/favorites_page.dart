@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dhaba/pages/user/classes_data.dart'; // Import the User class and its data
+import 'package:dhaba/pages/user/classes_data.dart';
+import 'package:dhaba/pages/user/drawer.dart';
 
 class FavoritesPage extends StatefulWidget {
   final User favoriteItems; // Pass UserFavoriteItems
@@ -16,7 +17,18 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favorites'),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
       ),
+      drawer: globalDrawer(context),
       body: Center(
         child: widget.favoriteItems.favorites.isEmpty
             ? Text('No favorite items, add items from the menu',

@@ -54,7 +54,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             duration: Duration(seconds: 2),
           ),
         );
-        print('Order placed successfully');
+        cartItemsMap.clear();
       } else {
         // Handle errors here
         ScaffoldMessenger.of(context).showSnackBar(

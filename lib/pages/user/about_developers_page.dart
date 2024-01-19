@@ -79,9 +79,7 @@ void _showDeveloperDialog(BuildContext context, Developer developer) {
           children: [
             Image.asset(
               developer.image,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
             SizedBox(height: 16),
             Text('${developer.id}'),

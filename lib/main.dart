@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: VendorListPage(),
+      home: HeroPage(),
     );
   }
 }
@@ -43,8 +43,8 @@ class HeroPage extends StatelessWidget {
               children: [
                 // Logo
                 Image.asset(
-                  'assets/FAST.png', // Replace with the path to your logo
-                  width: 200, // Adjust the width as needed
+                  'assets/FAST.png',
+                  width: 200,
                 ),
                 SizedBox(height: 20),
                 Text(
