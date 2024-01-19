@@ -15,11 +15,11 @@
 
 #### User Side
 
-![User Side](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/User%20Side.png) 
+![User Side](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/User-Side.png) 
 
 #### Vendor Side
 
-![Vendor Side](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/Vendor%20Side.png) 
+![Vendor Side](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/Vendor-Side.png) 
 
 ## Getting Started
 
