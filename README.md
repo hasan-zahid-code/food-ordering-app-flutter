@@ -15,8 +15,8 @@
 
 #### User Side
 
-![Hero Page](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/user1.png) 
-![Hero Page](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/user2.png) 
+![Hero Page](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/user1.jpeg) 
+![Hero Page](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/user2.jpeg) 
 
 ## Getting Started
 
