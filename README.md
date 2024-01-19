@@ -12,8 +12,7 @@
 - Users Favorite Food Items
 
  ### Screenshots
-.
-.
+![Hero Page]([http://url/to/img.png](https://github.com/hasan-zahid-code/Food-ordering-for-fastians/blob/main/screens/heroPage.png))
 . 
 
 ## Getting Started
